@@ -2,7 +2,7 @@
   "domain": "my_secret_garden",
   "name": "My Secret Garden",
   "version": "1.0.0",
-  "documentation": "https://github.com/votre_repo",
+  "documentation": "https://github.com/emeryn/ha-mysecretgarden",
   "dependencies": [],
   "codeowners": ["@jeremy"],
   "requirements": [],
