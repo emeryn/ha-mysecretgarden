@@ -8,10 +8,8 @@ class MySecretGardenConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         if user_input is not None:
-            # Enregistre l'intégration avec l'URL fournie
             return self.async_create_entry(title="Mon Potager", data=user_input)
 
-        # Affiche le formulaire
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({

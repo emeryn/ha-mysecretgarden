@@ -9,10 +9,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     
     entities = []
     
-    # Bouton Global (Nouveau)
     entities.append(GlobalWaterButton(coordinator, api_url))
     
-    # Boutons individuels
     entities.extend([WaterButton(coordinator, api_url, "bac", b["id"], b["nom"]) for b in coordinator.data.get("bacs", [])])
     entities.extend([WaterButton(coordinator, api_url, "pot", p["id"], p["nom"]) for p in coordinator.data.get("pots", [])])
     

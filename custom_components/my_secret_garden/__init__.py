@@ -24,7 +24,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             except Exception as err:
                 raise UpdateFailed(f"Erreur API My Secret Garden: {err}")
 
-    # Mise à jour automatique toutes les heures
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,

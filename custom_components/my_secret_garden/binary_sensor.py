@@ -5,16 +5,13 @@ from .const import DOMAIN
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
     
-    # 1. Ajout de l'alerte globale
     entities = [GlobalWaterSensor(coordinator)]
     
-    # 2. Capteurs individuels
     entities.extend([BacWaterSensor(coordinator, b["id"], b["nom"]) for b in coordinator.data.get("bacs", [])])
     entities.extend([PotWaterSensor(coordinator, p["id"], p["nom"]) for p in coordinator.data.get("pots", [])])
     
     async_add_entities(entities)
 
-# --- CAPTEUR GLOBAL ---
 class GlobalWaterSensor(CoordinatorEntity, BinarySensorEntity):
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
 
@@ -37,7 +34,6 @@ class GlobalWaterSensor(CoordinatorEntity, BinarySensorEntity):
         return bacs_soif or pots_soif
 
 
-# --- CAPTEURS INDIVIDUELS ---
 class BacWaterSensor(CoordinatorEntity, BinarySensorEntity):
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
 

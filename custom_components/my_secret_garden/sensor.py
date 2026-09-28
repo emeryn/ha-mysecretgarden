@@ -5,19 +5,19 @@ from .const import DOMAIN
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
     
-    # 1. Ajout des compteurs globaux
     entities = [
         GlobalPlantCountSensor(coordinator),
-        GlobalThirstyCountSensor(coordinator)
+        GlobalThirstyCountSensor(coordinator),
+        # --- LIGNES AJOUTÉES POUR LES GODETS ---
+        GodetCountSensor(coordinator),
+        GodetVarietesSensor(coordinator)
     ]
     
-    # 2. Capteurs individuels
     for bac in coordinator.data.get("bacs", []):
         entities.append(BacPlantCountSensor(coordinator, bac["id"], bac["nom"]))
         
     async_add_entities(entities)
 
-# --- CAPTEURS GLOBAUX ---
 class GlobalPlantCountSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -54,7 +54,44 @@ class GlobalThirstyCountSensor(CoordinatorEntity, SensorEntity):
         return bacs_soif + pots_soif
 
 
-# --- CAPTEURS INDIVIDUELS ---
+class GodetCountSensor(CoordinatorEntity, SensorEntity):
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_name = "Nombre total de godets"
+        self._attr_unique_id = "msg_godets_total"
+        self._attr_icon = "mdi:seed"
+        self._attr_native_unit_of_measurement = "godets"
+
+    @property
+    def device_info(self):
+        return {"identifiers": {(DOMAIN, "godets_garden")}, "name": "Mes Godets", "manufacturer": "My Secret Garden", "model": "Pouponnière"}
+
+    @property
+    def native_value(self):
+        return self.coordinator.data.get("godets", {}).get("total", 0)
+
+    @property
+    def extra_state_attributes(self):
+        """Affiche le détail des godets dans les infos supplémentaires"""
+        return {"Détails": self.coordinator.data.get("godets", {}).get("details", "")}
+
+
+class GodetVarietesSensor(CoordinatorEntity, SensorEntity):
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_name = "Variétés en semis"
+        self._attr_unique_id = "msg_godets_varietes"
+        self._attr_icon = "mdi:leaf"
+
+    @property
+    def device_info(self):
+        return {"identifiers": {(DOMAIN, "godets_garden")}, "name": "Mes Godets", "manufacturer": "My Secret Garden", "model": "Pouponnière"}
+
+    @property
+    def native_value(self):
+        return self.coordinator.data.get("godets", {}).get("varietes", 0)
+
+
 class BacPlantCountSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, bac_id, bac_nom):
         super().__init__(coordinator)
