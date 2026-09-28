@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connecter My Secret Garden",
+        "description": "Saisissez l'adresse de votre serveur FastAPI.",
+        "data": {
+          "api_url": "URL de l'API (ex: http://192.168.1.50:8000)"
+        }
+      }
+    }
+  }
+}
